@@ -17,15 +17,12 @@ class Youtube:
         link = []
         i = 3
         screen_height = self.driver.execute_script("return window.screen.height;")
-        while len(link) < 400:
+        while len(link) < 500:
             self.driver.implicitly_wait(5)
             self.driver.execute_script("window.scrollTo(0, {screen_height}*{i});".format(screen_height=screen_height, i=i))
             i += 3
             sleep(3)
             scroll_height = self.driver.execute_script("return document.body.scrollHeight;") 
-            
-            # if (screen_height) * i > scroll_height:
-            #     break
             
             content = self.driver.find_element(By.ID, "contents")
             video = content.find_elements(By.ID, "thumbnail")
@@ -33,10 +30,20 @@ class Youtube:
             for each_video in video:
                 vid_link = each_video.get_attribute("href")
                 link.append(vid_link)
-            
+                
         print("Final length is: ", len(link))
+        
+        return link
+    
+    
+    def open_link(self, links):
+        self.driver.implicitly_wait(5)
+        for link in links:
+            self.driver.get(link)
+            
 
 
 if __name__== '__main__':
     bot = Youtube()
-    bot.start()
+    links = bot.start()
+    bot.open_link(links)
